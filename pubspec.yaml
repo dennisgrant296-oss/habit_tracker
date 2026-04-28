@@ -1,0 +1,26 @@
+name: habit_tracker
+description: "Forge your future, one habit at a time"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  get: ^4.7.3
+  http: ^1.6.0
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  
+  #assets:
+   # - assets/
