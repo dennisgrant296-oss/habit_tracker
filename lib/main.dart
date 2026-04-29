@@ -1,19 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:habit_tracker/controllers/logincontroller.dart';
-import 'package:habit_tracker/controllers/settings_controller.dart';
 import 'package:habit_tracker/controllers/signupcontroller.dart';
 import 'package:habit_tracker/habits_screen.dart';
 import 'package:habit_tracker/homescreen.dart';
 import 'package:habit_tracker/login.dart';
 import 'package:habit_tracker/profiles.dart';
 import 'package:habit_tracker/signup.dart';
-import 'package:habit_tracker/splash_screen.dart';
 
 void main() {
   Get.put(Logincontroller());
   Get.put(Signupcontroller());
-  Get.put(SettingsController());
+  // Get.put(SettingsController());
 
   runApp(MyApp());
 }
@@ -25,7 +23,6 @@ class MyApp extends StatelessWidget {
       title: 'Habit Forge',
       initialRoute: '/',
       getPages: [
-        GetPage(name: '/', page: () => const SplashScreen()),
         GetPage(name: '/login', page: () => const LoginScreen()),
         GetPage(name: '/signup', page: () => const SignupScreen()),
         GetPage(name: '/home', page: () => const HomeScreen()),

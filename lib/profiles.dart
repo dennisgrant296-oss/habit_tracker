@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -81,13 +83,74 @@ class _ProfileScreenState extends State<ProfileScreen> {
       "progress": 0.3,
     },
     {
-      "icon": Icons.self_improvement,
+      "icon": Icons.spa,
       "name": "Mindful Month",
       "color": Colors.teal,
       "earned": true,
       "date": "Apr 5, 2024",
     },
   ];
+
+  Future<void> _updateProfileInDatabase(
+    String fullName,
+    String email,
+    String bio,
+  ) async {
+    int userId =
+        1; // Replace with actual logged-in user ID from your Logincontroller
+
+    try {
+      var url = Uri.parse(
+        "http://localhost/flutter_habit_tracker/update_profile.php",
+      );
+
+      var response = await http.post(
+        url,
+        body: {
+          'user_id': userId.toString(),
+          'full_name': fullName,
+          'email': email,
+          'bio': bio,
+        },
+      );
+
+      var data = jsonDecode(response.body);
+
+      if (data['success'] == 1) {
+        setState(() {
+          userName = fullName;
+          userEmail = email;
+          userBio = bio;
+          userAvatar = fullName.substring(0, 2).toUpperCase();
+        });
+
+        Get.snackbar(
+          "Success",
+          "Profile updated successfully!",
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      } else {
+        Get.snackbar(
+          "Error",
+          data['message'] ?? "Update failed",
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      print("Update error: $e");
+      Get.snackbar(
+        "Error",
+        "Connection failed: $e",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
 
   void _showEditProfileDialog() {
     TextEditingController nameController = TextEditingController(
@@ -168,17 +231,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ),
                   ),
                   ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        userName = nameController.text;
-                        userEmail = emailController.text;
-                        userBio = bioController.text;
-                        userAvatar = userName.isNotEmpty
-                            ? userName.substring(0, 2).toUpperCase()
-                            : "U";
-                      });
+                    onPressed: () async {
+                      await _updateProfileInDatabase(
+                        nameController.text,
+                        emailController.text,
+                        bioController.text,
+                      );
                       Get.back();
-                      _showSuccessSnackbar("Profile updated successfully!");
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xFF00D4A0),
